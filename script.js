@@ -9,6 +9,7 @@ class Button{
         button.innerHTML = `${this.value}`;
         button.classList.add("button");
         this.addHere.appendChild(button);
+        return button;
     }
 }
 
@@ -38,7 +39,7 @@ class Expression{
     return total;
     }
     BODMAS(){
-
+        //to be written
     }
 
     stringToExpression(arr){
@@ -70,24 +71,55 @@ class Expression{
 // console.log(calculation.operate());
 
 function buttonCreator(){
+    let arr = [];
     for (let i = 0; i <= 10; i++) {
         if (!(i == 0) && !(i  == 10)){    
             const button = new Button(`${i}` , document.querySelector(".numbers-container") );
-            button.buttonadder();
+            arr.push(button.buttonadder());
+            
         }
     
         else if (i == 10){
             const point = new Button("." , document.querySelector(".numbers-container") );
-            point.buttonadder();
+            arr.push(point.buttonadder());
     
             const button = new Button("0" , document.querySelector(".numbers-container") );
-            button.buttonadder();
+            arr.push(button.buttonadder());
     
             const equalTo = new Button("=" , document.querySelector(".numbers-container") );
-            equalTo.buttonadder();
+            arr.push(equalTo.buttonadder());
         }
     }
+    
+    document.querySelectorAll(".operation").forEach((element) => arr.push(element));
+    return arr;
 }
 
-buttonCreator();
-// need a way to store a variable which gets updated each time a button is pressed 
+
+// buttonCreator();
+// need a way to store a variable which gets updated each time a button is pressed
+
+
+
+function expressionGenerator() {
+    let a = '';
+    let counter = 0;
+    buttonCreator().forEach((function (button){
+        button.onclick = function (){
+            if (counter == 0){
+               a = `${button.textContent}`; 
+            }
+
+            else if(isNan(Number(button.textContent))){
+                a += ` ${button.textContent} ` 
+            }
+            else{
+                a += `${button.textContent}`;
+            }
+            counter = 1;
+        }
+    }));
+    console.log(a);
+}
+
+expressionGenerator();
