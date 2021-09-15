@@ -125,42 +125,48 @@ function expressionGenerator(counter, a, button){
     return a;
 }
 
-function keypad(buttons){
-    let counter = 0;
-    let a = [];
-    buttons.forEach((function (button){
-        button.onclick = function (){
-            a = expressionGenerator(counter, a, button);
-            counter = 1;   
-        }
-    }));
-
-    return a;
-}
-
 let buttons = buttonCreator();
-let clearcounter = 0;
+let counter = 0;
 const equalTo = document.querySelector(".equal");
 const upScreen = document.querySelector(".up");
 const downScreen = document.querySelector(".down");
 const buttonsArea = document.querySelector(".buttons");
-const clear = document.querySelector(".Clear")
+const clear = document.querySelector(".Clear");
+const back = document.querySelector(".Delete");
 
+let expressionArray = [];
+buttons.forEach((function (button){
+    button.onclick = function (){
+    expressionArray = expressionGenerator(counter, expressionArray, button);   
+    counter = 1;
+    }
+    }));
 
-let expression = new Expression(keypad(buttons));
+back.onclick = function() {
+    if (expressionArray[expressionArray.length-1] == " " ||expressionArray[expressionArray.length-1] == "\t" ||expressionArray[expressionArray.length-1] == "\n"){
+        expressionArray.splice(expressionArray.length-1);
+        expressionArray.splice(expressionArray.length-2);
+    }
+    else {
+        expressionArray.pop();
+    }
+    let expression = new Expression(expressionArray);
+    upScreen.innerHTML = expression.operation.join('');
+    downScreen.innerHTML = '';
+}
+clear.onclick = function(){
+    expressionArray = [];
+    upScreen.innerHTML = '';
+    downScreen.innerHTML = '';
+    clearcounter = 1;
+}
 
-
-// clear.onclick = function(){
-//     expression.operation = '';
-//     upScreen.innerHTML = '';
-//     downScreen.innerHTML = '';
-//     clearcounter = 1;
-// }
-
-// buttonsArea.onclick = function () {
-//     upScreen.innerHTML = expression.operation.join('');
+buttonsArea.onclick = function () {
+    let expression = new Expression(expressionArray);
+    upScreen.innerHTML = expression.operation.join('');
      
-// }
-// equalTo.onclick = function (){
-//     downScreen.innerHTML = expression.operate();
-// }
+}
+equalTo.onclick = function (){
+    let expression = new Expression(expressionArray);
+    downScreen.innerHTML = expression.operate();
+}
