@@ -25,7 +25,22 @@ body{
     width: 90%;
     background-color: rgb(8, 175, 111);
     margin-top: 1rem;
+    margin-left: 5px;
     border-radius: 10px;
+    padding: 5px 5px 5px 5px;
+}
+.up{
+    display: flex;
+    justify-content: flex-end;
+    height: 40%;
+    width: 100%;
+}
+.down{
+    display: flex;
+    justify-content: flex-end;
+    height: 60%;
+    width: 100%;
+    font-size: 30px;
 }
 .buttons{
     display: flex;
@@ -33,6 +48,7 @@ body{
     width: 90%;
     /* background-color: blue; */
     margin-top: 1rem;
+    margin-left: 20px;
 }
 .numbers-container{
     height: 100%;
@@ -55,4 +71,5 @@ body{
     width: 90%;
     margin-bottom: 10px;
     margin-top: 10px;
+    margin-left: auto;
 }

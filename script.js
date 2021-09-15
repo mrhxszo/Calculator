@@ -7,10 +7,14 @@ class Button{
     buttonadder(){
         let button = document.createElement("button");
         button.innerHTML = `${this.value}`;
+        if (this.value == "="){
+            button.classList.add("equal");
+        }
         button.classList.add("button");
         this.addHere.appendChild(button);
         return button;
-    }
+
+}
 }
 
 
@@ -19,27 +23,44 @@ class Expression{
         this.operation = operation;
     }
 
-    evaluator(total, second, third){
-        switch (second){
-            case ("+"):
-                total +=third;
-                // console.log(total);
-                break;
-            case("-"):
-                total -= third; 
-                // console.log(total);
-                break;
-            case ("*"):
-                total *= third;
-                break;
-            case ("/"):
-                total /= third;
-                break;
+
+    BODMASevaluator(expression){
+        let counter = 0;
+
+        while (!(expression.length == 1)){
+            while(true){
+                counter++;
+                if (expression.includes("/")){
+                    expression[expression.indexOf("/")-1] = expression[expression.indexOf("/")-1] / expression[expression.indexOf("/")+1] 
+                    expression.splice(expression.indexOf("/"), 2);
+                    break;
+
+                }
+
+                if (expression.includes("x")){
+                    expression[expression.indexOf("x")-1] = expression[expression.indexOf("x")-1] * expression[expression.indexOf("x")+1] 
+                    expression.splice(expression.indexOf("x"), 2);
+                    break;   
+                }
+
+                if (expression.includes("+")){
+                    expression[expression.indexOf("+")-1] = expression[expression.indexOf("+")-1] + expression[expression.indexOf("+")+1]; 
+                    expression.splice(expression.indexOf("+"), 2);
+                    break;   
+                }
+                if (expression.includes("-")){
+                    expression[expression.indexOf("-")-1] = expression[expression.indexOf("-")-1] - expression[expression.indexOf("-")+1] 
+                    expression.splice(expression.indexOf("-"), 2);
+                    break;   
+                }
+                if (counter >20){
+                    console.log(counter);
+                    break;
+                }
+            }
         }
-    return total;
-    }
-    BODMAS(){
-        //to be written
+
+        return expression;
     }
 
     stringToExpression(arr){
@@ -52,23 +73,11 @@ class Expression{
     }
 
     operate(){
-    let expression = this.stringToExpression(this.operation);
-    let total = expression[0];
-    for (let i = 0; i < expression.length-2; i++) {
-        if(i%2 == 0 || i == 0){
-            total = this.evaluator(total, expression[i+1], expression[i+2]);
-            
-        }
-    }  
+    let expression = this.stringToExpression(this.operation.join(''));
+    let total = this.BODMASevaluator(expression); 
     return total;
     } 
-
-
 }
-
-// let pro = prompt("Type an operation");
-// const calculation = new Expression(pro);
-// console.log(calculation.operate());
 
 function buttonCreator(){
     let arr = [];
@@ -92,6 +101,7 @@ function buttonCreator(){
     }
     
     document.querySelectorAll(".operation").forEach((element) => arr.push(element));
+    
     return arr;
 }
 
@@ -100,26 +110,57 @@ function buttonCreator(){
 // need a way to store a variable which gets updated each time a button is pressed
 
 
-
-function expressionGenerator() {
-    let a = '';
-    let counter = 0;
-    buttonCreator().forEach((function (button){
-        button.onclick = function (){
-            if (counter == 0){
-               a = `${button.textContent}`; 
-            }
-
-            else if(isNan(Number(button.textContent))){
-                a += ` ${button.textContent} ` 
-            }
-            else{
-                a += `${button.textContent}`;
-            }
-            counter = 1;
+function expressionGenerator(counter, a, button){
+    if (counter == 0){
+            a.push(`${button.textContent}`);
         }
-    }));
-    console.log(a);
+
+        else if(isNaN(Number(button.textContent))){
+            a.push(" ");
+            a.push(`${button.textContent}`);
+            a.push(" ");        }
+        else{
+            a.push(`${button.textContent}`);
+        }
+    return a;
 }
 
-expressionGenerator();
+function keypad(buttons){
+    let counter = 0;
+    let a = [];
+    buttons.forEach((function (button){
+        button.onclick = function (){
+            a = expressionGenerator(counter, a, button);
+            counter = 1;   
+        }
+    }));
+
+    return a;
+}
+
+let buttons = buttonCreator();
+let clearcounter = 0;
+const equalTo = document.querySelector(".equal");
+const upScreen = document.querySelector(".up");
+const downScreen = document.querySelector(".down");
+const buttonsArea = document.querySelector(".buttons");
+const clear = document.querySelector(".Clear")
+
+
+let expression = new Expression(keypad(buttons));
+
+
+// clear.onclick = function(){
+//     expression.operation = '';
+//     upScreen.innerHTML = '';
+//     downScreen.innerHTML = '';
+//     clearcounter = 1;
+// }
+
+// buttonsArea.onclick = function () {
+//     upScreen.innerHTML = expression.operation.join('');
+     
+// }
+// equalTo.onclick = function (){
+//     downScreen.innerHTML = expression.operate();
+// }
