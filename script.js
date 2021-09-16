@@ -106,22 +106,19 @@ function buttonCreator(){
 }
 
 
-// buttonCreator();
-// need a way to store a variable which gets updated each time a button is pressed
-
-
 function expressionGenerator(counter, a, button){
     if (counter == 0){
             a.push(`${button.textContent}`);
         }
 
-        else if(isNaN(Number(button.textContent))){
-            a.push(" ");
-            a.push(`${button.textContent}`);
-            a.push(" ");        }
-        else{
-            a.push(`${button.textContent}`);
-        }
+    else if(isNaN(Number(button.textContent)) && !button.textContent.includes(".")){
+        a.push(" ");
+        a.push(`${button.textContent}`);
+        a.push(" ");        
+    }
+    else if ( !(isNaN(Number(button.textContent))) || button.textContent.includes(".") ){
+        a.push(`${button.textContent}`);
+    }
     return a;
 }
 
@@ -158,15 +155,21 @@ clear.onclick = function(){
     expressionArray = [];
     upScreen.innerHTML = '';
     downScreen.innerHTML = '';
-    clearcounter = 1;
 }
 
 buttonsArea.onclick = function () {
     let expression = new Expression(expressionArray);
     upScreen.innerHTML = expression.operation.join('');
-     
+
 }
 equalTo.onclick = function (){
     let expression = new Expression(expressionArray);
-    downScreen.innerHTML = expression.operate();
+    console.log(expressionArray[0],expressionArray[expressionArray.length - 1 ]);
+    if(isNaN(expressionArray[0]) || isNaN(expressionArray[expressionArray.length - 1 ])){
+        console.log(expressionArray[expressionArray.length - 1 ]);
+        downScreen.innerHTML = "Syntax Error";
+    }
+    else{
+        downScreen.innerHTML = expression.operate();
+    }
 }
