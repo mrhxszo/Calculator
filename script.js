@@ -6,7 +6,7 @@ class Button{
 
     buttonadder(){
         let button = document.createElement("button");
-        button.innerHTML = `${this.value}`;
+        button.textContent = `${this.value}`;
         if (this.value == "="){
             button.classList.add("equal");
         }
@@ -74,7 +74,7 @@ class Expression{
 
     operate(){
     let expression = this.stringToExpression(this.operation.join(''));
-    let total = this.BODMASevaluator(expression); 
+    let total = this.BODMASevaluator(expression);
     return total;
     } 
 }
@@ -104,13 +104,29 @@ function buttonCreator(){
     
     return arr;
 }
-
+function moreThanOneDotCheck(a){
+    let check = a.lastIndexOf(" ");
+    if (check == -1){
+        return a;
+    }
+    else{
+       return a.filter((i, index )=> {
+           if(index > check && index < a.length){
+                return i;
+           }
+           else {return null;}
+       });
+    }
+}
 
 function expressionGenerator(counter, a, button){
-    if (counter == 0){
+    let dotcheck = moreThanOneDotCheck(a);
+    if (dotcheck.includes(".") && button.textContent.includes(".")){
+        return a;
+    }
+    else if (counter == 0){
             a.push(`${button.textContent}`);
         }
-
     else if(isNaN(Number(button.textContent)) && !button.textContent.includes(".")){
         a.push(" ");
         a.push(`${button.textContent}`);
@@ -119,6 +135,8 @@ function expressionGenerator(counter, a, button){
     else if ( !(isNaN(Number(button.textContent))) || button.textContent.includes(".") ){
         a.push(`${button.textContent}`);
     }
+
+    console.log(dotcheck);
     return a;
 }
 
@@ -148,28 +166,34 @@ back.onclick = function() {
         expressionArray.pop();
     }
     let expression = new Expression(expressionArray);
-    upScreen.innerHTML = expression.operation.join('');
-    downScreen.innerHTML = '';
+    upScreen.textContent = expression.operation.join('');
+    downScreen.textContent = '';
 }
 clear.onclick = function(){
     expressionArray = [];
-    upScreen.innerHTML = '';
-    downScreen.innerHTML = '';
+    upScreen.textContent = '';
+    downScreen.textContent = '';
 }
 
 buttonsArea.onclick = function () {
     let expression = new Expression(expressionArray);
-    upScreen.innerHTML = expression.operation.join('');
+    upScreen.textContent = expression.operation.join('');
 
 }
 equalTo.onclick = function (){
     let expression = new Expression(expressionArray);
-    console.log(expressionArray[0],expressionArray[expressionArray.length - 1 ]);
-    if(isNaN(expressionArray[0]) || isNaN(expressionArray[expressionArray.length - 1 ])){
+    if(isNaN(expressionArray[1]) && !(expressionArray[1].includes(".")) || isNaN(expressionArray[expressionArray.length - 2 ]) && !(expressionArray[expressionArray.length - 2 ].includes("."))){
         console.log(expressionArray[expressionArray.length - 1 ]);
-        downScreen.innerHTML = "Syntax Error";
+        downScreen.textContent = "Syntax Error";
     }
     else{
-        downScreen.innerHTML = expression.operate();
+        a = expression.operate();
+        if (`${a[0]}`.includes(".")){
+            downScreen.textContent = expression.operate()[0].toFixed(2);
+        }
+        else{
+            downScreen.textContent = a;
+        }
+        expressionArray = a;
     }
 }
